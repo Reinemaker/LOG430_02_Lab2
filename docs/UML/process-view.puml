@@ -1,0 +1,40 @@
+@startuml Process View
+
+|Console Client|
+start
+:User Input;
+fork
+  :Product Search;
+  :Update Stock;
+fork again
+  :Create Sale;
+  :Process Payment;
+  :Update Inventory;
+end fork
+:Display Results;
+
+|Database Service|
+start
+:Initialize Connection;
+fork
+  :Handle Product Queries;
+  :Manage Stock Updates;
+fork again
+  :Process Sales;
+  :Handle Cancellations;
+end fork
+:Maintain Data Consistency;
+
+|MongoDB|
+start
+:Start Database;
+fork
+  :Handle Product Operations;
+  :Manage Stock Changes;
+fork again
+  :Process Sale Records;
+  :Handle Status Updates;
+end fork
+:Maintain Data Integrity;
+
+@enduml 

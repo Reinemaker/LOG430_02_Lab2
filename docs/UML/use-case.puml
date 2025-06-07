@@ -1,0 +1,39 @@
+@startuml Use Case Diagram
+
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Cashier" as cashier
+actor "Manager" as manager
+
+rectangle "Corner Shop POS System" {
+    usecase "Search Products" as UC1
+    usecase "Create Sale" as UC2
+    usecase "Cancel Sale" as UC3
+    usecase "Check Stock" as UC4
+    usecase "Switch Database" as UC5
+    usecase "Sync Databases" as UC6
+    usecase "View Sales History" as UC7
+    usecase "Manage Products" as UC8
+}
+
+cashier --> UC1
+cashier --> UC2
+cashier --> UC3
+cashier --> UC4
+cashier --> UC7
+
+manager --> UC1
+manager --> UC2
+manager --> UC3
+manager --> UC4
+manager --> UC5
+manager --> UC6
+manager --> UC7
+manager --> UC8
+
+UC2 ..> UC1 : <<include>>
+UC3 ..> UC7 : <<include>>
+UC8 ..> UC1 : <<include>>
+
+@enduml 

@@ -1,0 +1,50 @@
+@startuml Logical View
+
+package "Presentation Layer" {
+    class "Console Client"
+}
+
+package "Business Layer" {
+    class "Database Service"
+    class "Product Management"
+    class "Sale Management"
+}
+
+package "Data Layer" {
+    class "MongoDB"
+}
+
+package "Models" {
+    class Product {
+        +Name: string
+        +Category: string
+        +Price: decimal
+        +StockQuantity: int
+    }
+
+    class Sale {
+        +Id: string
+        +Date: DateTime
+        +Items: List<SaleItem>
+        +Total: decimal
+        +Status: SaleStatus
+    }
+
+    class SaleItem {
+        +ProductName: string
+        +Quantity: int
+        +Price: decimal
+    }
+}
+
+"Console Client" --> "Database Service"
+"Database Service" --> "Product Management"
+"Database Service" --> "Sale Management"
+"Product Management" --> "MongoDB"
+"Sale Management" --> "MongoDB"
+"Product Management" ..> Product
+"Sale Management" ..> Sale
+Sale *-- SaleItem
+SaleItem ..> Product
+
+@enduml 

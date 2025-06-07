@@ -1,0 +1,28 @@
+@startuml Physical View
+
+node "Application Server" {
+    [Corner Shop Console App]
+    [.NET Runtime]
+}
+
+node "Database Server" {
+    [MongoDB]
+    [MongoDB Data Files]
+    [SQLite Database]
+    [SQLite Data Files]
+}
+
+cloud "Docker Environment" {
+    [Docker Container]
+    [Docker Network]
+}
+
+[Corner Shop Console App] --> [.NET Runtime]
+[.NET Runtime] --> [Docker Container]
+[Docker Container] --> [Docker Network]
+[Docker Network] --> [MongoDB]
+[Docker Network] --> [SQLite Database]
+[MongoDB] --> [MongoDB Data Files]
+[SQLite Database] --> [SQLite Data Files]
+
+@enduml 

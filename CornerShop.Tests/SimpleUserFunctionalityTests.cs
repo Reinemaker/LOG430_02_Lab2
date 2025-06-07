@@ -1,0 +1,86 @@
+using Xunit;
+using CornerShop.Services;
+using CornerShop.Models;
+using Moq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace CornerShop.Tests;
+
+public class SimpleUserFunctionalityTests
+{
+    [Fact]
+    public async Task SearchProducts_ReturnsExpectedResults()
+    {
+        // Arrange
+        var mockService = new Mock<IDatabaseService>();
+        var expected = new List<Product> {
+            new Product { Name = "Apple", Category = "Fruit", Price = 1.0m, StockQuantity = 10 },
+            new Product { Name = "Banana", Category = "Fruit", Price = 2.0m, StockQuantity = 20 }
+        };
+        mockService.Setup(s => s.SearchProducts("a")).ReturnsAsync(expected);
+
+        // Act
+        var result = await mockService.Object.SearchProducts("a");
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Contains(result, p => p.Name == "Apple");
+        Assert.Contains(result, p => p.Name == "Banana");
+    }
+
+    [Fact]
+    public async Task RegisterSale_ReturnsSaleId()
+    {
+        // Arrange
+        var mockService = new Mock<IDatabaseService>();
+        var sale = new Sale
+        {
+            Items = new List<SaleItem> {
+                new SaleItem { ProductName = "Apple", Quantity = 2, Price = 1.0m }
+            },
+            Total = 2.0m
+        };
+        mockService.Setup(s => s.CreateSale(sale)).ReturnsAsync("sale123");
+
+        // Act
+        var saleId = await mockService.Object.CreateSale(sale);
+
+        // Assert
+        Assert.Equal("sale123", saleId);
+    }
+
+    [Fact]
+    public async Task CancelSale_ReturnsTrueOnSuccess()
+    {
+        // Arrange
+        var mockService = new Mock<IDatabaseService>();
+        mockService.Setup(s => s.CancelSale("sale123")).ReturnsAsync(true);
+
+        // Act
+        var result = await mockService.Object.CancelSale("sale123");
+
+        // Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public async Task GetAllProducts_ReturnsAllProducts()
+    {
+        // Arrange
+        var mockService = new Mock<IDatabaseService>();
+        var expected = new List<Product> {
+            new Product { Name = "Apple", Category = "Fruit", Price = 1.0m, StockQuantity = 10 },
+            new Product { Name = "Banana", Category = "Fruit", Price = 2.0m, StockQuantity = 20 }
+        };
+        mockService.Setup(s => s.GetAllProducts()).ReturnsAsync(expected);
+
+        // Act
+        var result = await mockService.Object.GetAllProducts();
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Contains(result, p => p.Name == "Apple");
+        Assert.Contains(result, p => p.Name == "Banana");
+    }
+}

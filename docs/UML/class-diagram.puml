@@ -1,0 +1,80 @@
+@startuml Corner Shop Class Diagram
+
+' Style
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+' Interfaces
+interface IDatabaseService {
+    +SearchProducts(term: string): List<Product>
+    +GetProductByName(name: string): Product
+    +UpdateProductStock(name: string, quantity: int): bool
+    +CreateSale(sale: Sale): string
+    +GetRecentSales(limit: int): List<Sale>
+    +GetSaleById(id: string): Sale
+    +CancelSale(id: string): bool
+    +GetAllProducts(): List<Product>
+}
+
+interface ISyncService {
+    +SyncDatabases(): Task
+    +SyncProducts(): Task
+    +SyncSales(): Task
+}
+
+' Classes
+class DatabaseService {
+    -_database: IMongoDatabase
+    -_products: IMongoCollection<Product>
+    -_sales: IMongoCollection<Sale>
+    +SearchProducts(term: string): List<Product>
+    +GetProductByName(name: string): Product
+    +UpdateProductStock(name: string, quantity: int): bool
+    +CreateSale(sale: Sale): string
+    +GetRecentSales(limit: int): List<Sale>
+    +GetSaleById(id: string): Sale
+    +CancelSale(id: string): bool
+    +GetAllProducts(): List<Product>
+}
+
+class SyncService {
+    -_mongoService: IDatabaseService
+    -_efService: IDatabaseService
+    +SyncDatabases(): Task
+    +SyncProducts(): Task
+    +SyncSales(): Task
+}
+
+class Product {
+    +Id: ObjectId
+    +Name: string
+    +Category: string
+    +Price: decimal
+    +Stock: int
+    +Description: string
+}
+
+class Sale {
+    +Id: ObjectId
+    +Items: List<SaleItem>
+    +Total: decimal
+    +Date: DateTime
+    +Status: SaleStatus
+    +IsCancelled: bool
+}
+
+class SaleItem {
+    +ProductName: string
+    +Quantity: int
+    +Price: decimal
+}
+
+' Relationships
+IDatabaseService <|.. DatabaseService
+ISyncService <|.. SyncService
+DatabaseService --> Product: manages
+DatabaseService --> Sale: manages
+Sale --> SaleItem: contains
+SyncService --> IDatabaseService: uses
+
+@enduml 
