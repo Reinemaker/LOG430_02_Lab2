@@ -18,7 +18,7 @@ public class SimpleUserFunctionalityTests
             new Product { Name = "Apple", Category = "Fruit", Price = 1.0m, StockQuantity = 10 },
             new Product { Name = "Banana", Category = "Fruit", Price = 2.0m, StockQuantity = 20 }
         };
-        mockService.Setup(s => s.SearchProducts("a", null)).ReturnsAsync(expected);
+        mockService.Setup(s => s.SearchProducts(It.IsAny<string>(), It.IsAny<string?>())).ReturnsAsync(expected);
 
         // Act
         var result = await mockService.Object.SearchProducts("a", null);
