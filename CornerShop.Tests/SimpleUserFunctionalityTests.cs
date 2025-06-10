@@ -18,10 +18,10 @@ public class SimpleUserFunctionalityTests
             new Product { Name = "Apple", Category = "Fruit", Price = 1.0m, StockQuantity = 10 },
             new Product { Name = "Banana", Category = "Fruit", Price = 2.0m, StockQuantity = 20 }
         };
-        mockService.Setup(s => s.SearchProducts("a")).ReturnsAsync(expected);
+        mockService.Setup(s => s.SearchProducts("a", null)).ReturnsAsync(expected);
 
         // Act
-        var result = await mockService.Object.SearchProducts("a");
+        var result = await mockService.Object.SearchProducts("a", null);
 
         // Assert
         Assert.Equal(2, result.Count);

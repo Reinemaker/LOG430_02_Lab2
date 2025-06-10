@@ -11,12 +11,10 @@ namespace CornerShop.Services
             _databaseService = databaseService;
         }
 
-        public async Task<List<Product>> SearchProducts(string searchTerm, string storeId)
+        public async Task<List<Product>> SearchProducts(string searchTerm, string? storeId = null)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 throw new ArgumentException("Search term cannot be empty", nameof(searchTerm));
-            if (string.IsNullOrWhiteSpace(storeId))
-                throw new ArgumentException("Store ID cannot be empty", nameof(storeId));
             return await _databaseService.SearchProducts(searchTerm, storeId);
         }
 

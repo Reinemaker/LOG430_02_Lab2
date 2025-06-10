@@ -4,7 +4,7 @@ namespace CornerShop.Services
 {
     public interface IProductService
     {
-        Task<List<Product>> SearchProducts(string searchTerm, string storeId);
+        Task<List<Product>> SearchProducts(string searchTerm, string? storeId = null);
         Task<Product?> GetProductByName(string name, string storeId);
         Task<bool> UpdateStock(string productName, string storeId, int quantity);
         Task<List<Product>> GetAllProducts(string storeId);
