@@ -39,7 +39,7 @@ public class SimpleUserFunctionalityTests
             Items = new List<SaleItem> {
                 new SaleItem { ProductName = "Apple", Quantity = 2, Price = 1.0m }
             },
-            Total = 2.0m
+            TotalAmount = 2.0m
         };
         mockService.Setup(s => s.CreateSale(sale)).ReturnsAsync("sale123");
 

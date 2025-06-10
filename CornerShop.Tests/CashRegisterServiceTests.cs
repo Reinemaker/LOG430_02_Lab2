@@ -43,7 +43,7 @@ namespace CornerShop.Tests
             };
 
             _mockProductService
-                .Setup(x => x.ValidateStockAvailability(It.IsAny<string>(), It.IsAny<int>()))
+                .Setup(x => x.ValidateStockAvailability(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(true);
 
             _mockSaleService
@@ -75,7 +75,7 @@ namespace CornerShop.Tests
             };
 
             _mockProductService
-                .Setup(x => x.ValidateStockAvailability(It.IsAny<string>(), It.IsAny<int>()))
+                .Setup(x => x.ValidateStockAvailability(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(false);
 
             // Act & Assert
@@ -104,7 +104,7 @@ namespace CornerShop.Tests
 
             // Create a sale first to set up the active sale
             _mockProductService
-                .Setup(x => x.ValidateStockAvailability(It.IsAny<string>(), It.IsAny<int>()))
+                .Setup(x => x.ValidateStockAvailability(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(true);
 
             _mockSaleService
@@ -116,7 +116,7 @@ namespace CornerShop.Tests
 
             // Now set up the cancel sale mock
             _mockSaleService
-                .Setup(x => x.CancelSale(saleId))
+                .Setup(x => x.CancelSale(saleId, It.IsAny<string>()))
                 .ReturnsAsync(true);
 
             // Act
@@ -124,7 +124,7 @@ namespace CornerShop.Tests
 
             // Assert
             Assert.True(result);
-            _mockSaleService.Verify(x => x.CancelSale(saleId), Times.Once);
+            _mockSaleService.Verify(x => x.CancelSale(saleId, It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
@@ -135,7 +135,7 @@ namespace CornerShop.Tests
             var saleId = "invalid-sale";
 
             _mockSaleService
-                .Setup(x => x.CancelSale(It.IsAny<string>()))
+                .Setup(x => x.CancelSale(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(false);
 
             // Act
