@@ -1,3 +1,4 @@
+#pragma warning disable CS0854 // An expression tree may not contain a call or invocation that uses optional arguments
 using Xunit;
 using CornerShop.Services;
 using CornerShop.Models;
