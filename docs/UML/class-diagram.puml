@@ -16,51 +16,42 @@ interface IDatabaseService {
     +GetAllProducts(): List<Product>
 }
 
-interface ISyncService {
-    +SyncDatabases(): Task
-    +SyncProducts(): Task
-    +SyncSales(): Task
-}
-
-' Classes
-class DatabaseService {
-    -_database: IMongoDatabase
-    -_products: IMongoCollection<Product>
-    -_sales: IMongoCollection<Sale>
-    +SearchProducts(term: string): List<Product>
-    +GetProductByName(name: string): Product
-    +UpdateProductStock(name: string, quantity: int): bool
-    +CreateSale(sale: Sale): string
-    +GetRecentSales(limit: int): List<Sale>
-    +GetSaleById(id: string): Sale
-    +CancelSale(id: string): bool
+class LocalProductService {
+    +AddProduct(product: Product)
     +GetAllProducts(): List<Product>
 }
 
-class SyncService {
-    -_mongoService: IDatabaseService
-    -_efService: IDatabaseService
-    +SyncDatabases(): Task
-    +SyncProducts(): Task
-    +SyncSales(): Task
+class LocalSaleService {
+    +AddSale(sale: Sale)
+    +GetAllSales(): List<Sale>
+    +GetUnsyncedSales(storeId: string): List<Sale>
+    +MarkSaleAsSynced(saleId: string)
 }
 
+class SyncService {
+    +SyncAllSalesToCentralAsync(storeId: string): Task
+}
+
+class MongoDatabaseService {
+    +CreateSale(sale: Sale): string
+    +GetAllSales(): List<Sale>
+}
+
+' Classes
 class Product {
-    +Id: ObjectId
+    +Id: string
     +Name: string
     +Category: string
     +Price: decimal
     +Stock: int
-    +Description: string
 }
 
 class Sale {
-    +Id: ObjectId
+    +Id: string
     +Items: List<SaleItem>
     +Total: decimal
     +Date: DateTime
     +Status: SaleStatus
-    +IsCancelled: bool
 }
 
 class SaleItem {
@@ -70,11 +61,13 @@ class SaleItem {
 }
 
 ' Relationships
-IDatabaseService <|.. DatabaseService
-ISyncService <|.. SyncService
-DatabaseService --> Product: manages
-DatabaseService --> Sale: manages
-Sale --> SaleItem: contains
-SyncService --> IDatabaseService: uses
+IDatabaseService <|.. MongoDatabaseService
+LocalProductService --> "SQLite (Local)"
+LocalSaleService --> "SQLite (Local)"
+SyncService --> LocalSaleService
+SyncService --> MongoDatabaseService
+MongoDatabaseService --> Product
+MongoDatabaseService --> Sale
+Sale --> SaleItem
 
 @enduml 

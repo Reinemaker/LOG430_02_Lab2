@@ -18,6 +18,21 @@ public class Product
     [BsonElement("price")]
     public decimal Price { get; set; }
 
+    [BsonElement("storeId")]
+    public string StoreId { get; set; } = string.Empty;
+
     [BsonElement("stock")]
     public int StockQuantity { get; set; }
+
+    [BsonElement("lastUpdated")]
+    public DateTime LastUpdated { get; set; }
+
+    [BsonElement("isActive")]
+    public bool IsActive { get; set; } = true;
+
+    [BsonElement("minimumStockLevel")]
+    public int MinimumStockLevel { get; set; }
+
+    [BsonElement("reorderPoint")]
+    public int ReorderPoint { get; set; }
 }

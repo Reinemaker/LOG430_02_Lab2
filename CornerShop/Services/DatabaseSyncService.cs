@@ -39,7 +39,7 @@ namespace CornerShop.Services
                 }
                 else if (efProduct.StockQuantity != product.StockQuantity)
                 {
-                    await _efDb.UpdateProductStock(product.Name, product.StockQuantity - efProduct.StockQuantity);
+                    await _efDb.UpdateProductStock(product.Name, product.StoreId, product.StockQuantity - efProduct.StockQuantity);
                 }
             }
 
@@ -61,13 +61,14 @@ namespace CornerShop.Services
                 }
                 else if (mongoProduct.StockQuantity != product.StockQuantity)
                 {
-                    await _mongoDb.UpdateProductStock(product.Name, product.StockQuantity - mongoProduct.StockQuantity);
+                    await _mongoDb.UpdateProductStock(product.Name, product.StoreId, product.StockQuantity - mongoProduct.StockQuantity);
                 }
             }
 
             // Sync sales
-            var mongoSales = await _mongoDb.GetRecentSales(int.MaxValue);
-            var efSales = await _efDb.GetRecentSales(int.MaxValue);
+            var thirtyDaysAgo = DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd");
+            var mongoSales = await _mongoDb.GetRecentSales(thirtyDaysAgo);
+            var efSales = await _efDb.GetRecentSales(thirtyDaysAgo);
 
             // Sync from MongoDB to EF Core
             foreach (var sale in mongoSales)

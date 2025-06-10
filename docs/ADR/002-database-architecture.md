@@ -1,46 +1,37 @@
-# ADR 002: Database Architecture Evolution
+# ADR 002: Database Architecture
 
 ## Status
 Accepted
 
 ## Context
-The Corner Shop application requires a database solution that can:
-- Store product inventory data
-- Track sales transactions
-- Support basic reporting
-- Be easily deployed and maintained
-- Scale with growing business needs
-- Support concurrent access
-- Ensure data consistency
-- Provide transaction management
+The Corner Shop system is designed for distributed, multi-store operation. Each store must be able to function independently (including offline), while the head office requires consolidated reporting and administration. The architecture must support easy onboarding of new stores, reliable data synchronization, and a modern web interface.
 
-## Decision Evolution
+## Decision
+- Each store uses a local SQLite database for products and sales.
+- The head office uses a central MongoDB database for consolidated data and reporting.
+- A sync service allows admins to push all unsynced sales from local SQLite to MongoDB from the Reports page.
+- The system is built as an ASP.NET Core MVC web application.
 
-### Phase 1: MongoDB as Primary Database
-Initially, we chose MongoDB as our primary database technology because:
-- Flexible schema design allows for easy modifications to data models
-- Document-based storage aligns well with our object-oriented codebase
-- Excellent performance for read/write operations
-- Native support for JSON-like documents
-- Easy horizontal scaling
-- Strong community support and documentation
-- Good integration with .NET through MongoDB.Driver
+## Consequences
 
-### Phase 2: Dual Database Architecture
-We evolved to implement dual database support:
-1. MongoDB as primary NoSQL database
-   - Document-based storage
-   - Flexible schema
-   - Good performance for read operations
-   - Easy horizontal scaling
-   - Native .NET driver support
+### Positive
+- Stores can operate offline and independently
+- Reliable, consistent data synchronization to head office
+- Centralized reporting and administration
+- Easy to add new stores (just create a new SQLite file)
+- Simple, robust sync process
+- Modern, scalable web architecture
 
-2. Entity Framework Core with SQLite as relational database
-   - Relational data model
-   - ACID transactions
-   - Built-in .NET integration
-   - Lightweight and portable
-   - No separate server required
+### Negative
+- Need to ensure all stores regularly sync to central database
+- Potential for temporary data divergence until sync
+- Slightly more complex architecture
+
+## Implementation Notes
+- On store creation, the system creates a new SQLite file and tables for that store
+- Store operations use LocalProductService and LocalSaleService
+- SyncService pushes unsynced sales to MongoDB
+- Admins can trigger sync from the Reports page
 
 ## Alternatives Considered
 
@@ -64,27 +55,7 @@ We evolved to implement dual database support:
   - Not suitable for concurrent access
   - Limited reporting capabilities
 
-## Consequences
-
-### Positive
-- Flexibility in data storage
-- Better performance for different use cases
-- Data redundancy
-- Easy switching between databases
-- Simple deployment (especially SQLite)
-- ACID compliance through EF Core
-- Scalability through MongoDB
-- Built-in .NET integration
-
-### Negative
-- Increased complexity in data synchronization
-- Need to maintain two database implementations
-- Potential consistency issues
-- More complex testing requirements
-- Additional development overhead
-- Need for conflict resolution strategies
-
-## Implementation Notes
+## Implementation Notes (Updated)
 - Using MongoDB.Driver 3.4.0 for .NET integration
 - Using Entity Framework Core 6.0 with SQLite
 - Implementing data validation in the application layer

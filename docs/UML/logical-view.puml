@@ -1,17 +1,18 @@
 @startuml Logical View
 
 package "Presentation Layer" {
-    class "Console Client"
+    class "Web Client"
 }
 
 package "Business Layer" {
-    class "Database Service"
+    class "Sync Service"
     class "Product Management"
     class "Sale Management"
 }
 
 package "Data Layer" {
-    class "MongoDB"
+    class "MongoDB (Central)"
+    class "SQLite (Local, per Store)"
 }
 
 package "Models" {
@@ -37,11 +38,12 @@ package "Models" {
     }
 }
 
-"Console Client" --> "Database Service"
-"Database Service" --> "Product Management"
-"Database Service" --> "Sale Management"
-"Product Management" --> "MongoDB"
-"Sale Management" --> "MongoDB"
+"Web Client" --> "Product Management"
+"Web Client" --> "Sale Management"
+"Product Management" --> "SQLite (Local, per Store)"
+"Sale Management" --> "SQLite (Local, per Store)"
+"Sync Service" --> "SQLite (Local, per Store)"
+"Sync Service" --> "MongoDB (Central)"
 "Product Management" ..> Product
 "Sale Management" ..> Sale
 Sale *-- SaleItem

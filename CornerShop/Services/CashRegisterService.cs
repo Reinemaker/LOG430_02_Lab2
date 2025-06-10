@@ -69,7 +69,7 @@ namespace CornerShop.Services
                 // Validate stock availability for all items
                 foreach (var item in sale.Items)
                 {
-                    if (!await _productService.ValidateStockAvailability(item.ProductName, item.Quantity))
+                    if (!await _productService.ValidateStockAvailability(item.ProductName, sale.StoreId, item.Quantity))
                     {
                         throw new InvalidOperationException($"Insufficient stock for {item.ProductName}");
                     }
@@ -98,7 +98,11 @@ namespace CornerShop.Services
             {
                 if (_activeSales.TryGetValue(registerId, out var activeSaleId) && activeSaleId == saleId)
                 {
-                    var success = await _saleService.CancelSale(saleId);
+                    // Get the store ID from the active sale
+                    var activeSale = await _saleService.GetSaleById(saleId);
+                    if (activeSale == null) return false;
+
+                    var success = await _saleService.CancelSale(saleId, activeSale.StoreId);
                     if (success)
                     {
                         _activeSales.Remove(registerId);

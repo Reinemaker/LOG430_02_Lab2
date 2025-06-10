@@ -11,47 +11,51 @@ namespace CornerShop.Services
             _databaseService = databaseService;
         }
 
-        public async Task<List<Product>> SearchProducts(string searchTerm)
+        public async Task<List<Product>> SearchProducts(string searchTerm, string storeId)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
                 throw new ArgumentException("Search term cannot be empty", nameof(searchTerm));
-
-            return await _databaseService.SearchProducts(searchTerm);
+            if (string.IsNullOrWhiteSpace(storeId))
+                throw new ArgumentException("Store ID cannot be empty", nameof(storeId));
+            return await _databaseService.SearchProducts(searchTerm, storeId);
         }
 
-        public async Task<Product?> GetProductByName(string name)
+        public async Task<Product?> GetProductByName(string name, string storeId)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Product name cannot be empty", nameof(name));
-
-            return await _databaseService.GetProductByName(name);
+            if (string.IsNullOrWhiteSpace(storeId))
+                throw new ArgumentException("Store ID cannot be empty", nameof(storeId));
+            return await _databaseService.GetProductByName(name, storeId);
         }
 
-        public async Task<bool> UpdateStock(string productName, int quantity)
+        public async Task<bool> UpdateStock(string productName, string storeId, int quantity)
         {
             if (string.IsNullOrWhiteSpace(productName))
                 throw new ArgumentException("Product name cannot be empty", nameof(productName));
-
+            if (string.IsNullOrWhiteSpace(storeId))
+                throw new ArgumentException("Store ID cannot be empty", nameof(storeId));
             if (quantity == 0)
                 throw new ArgumentException("Quantity cannot be zero", nameof(quantity));
-
-            return await _databaseService.UpdateProductStock(productName, quantity);
+            return await _databaseService.UpdateProductStock(productName, storeId, quantity);
         }
 
-        public async Task<List<Product>> GetAllProducts()
+        public async Task<List<Product>> GetAllProducts(string storeId)
         {
-            return await _databaseService.GetAllProducts();
+            if (string.IsNullOrWhiteSpace(storeId))
+                throw new ArgumentException("Store ID cannot be empty", nameof(storeId));
+            return await _databaseService.GetAllProducts(storeId);
         }
 
-        public async Task<bool> ValidateProductExists(string productName)
+        public async Task<bool> ValidateProductExists(string productName, string storeId)
         {
-            var product = await GetProductByName(productName);
+            var product = await GetProductByName(productName, storeId);
             return product != null;
         }
 
-        public async Task<bool> ValidateStockAvailability(string productName, int quantity)
+        public async Task<bool> ValidateStockAvailability(string productName, string storeId, int quantity)
         {
-            var product = await GetProductByName(productName);
+            var product = await GetProductByName(productName, storeId);
             if (product == null) return false;
             return product.StockQuantity >= quantity;
         }

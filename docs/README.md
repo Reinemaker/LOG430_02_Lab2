@@ -1,5 +1,29 @@
 # Corner Shop - Technical Documentation
 
+## Overview
+Corner Shop is a distributed, web-based multi-store management system. Each store operates with its own local SQLite database for products and sales, supporting full offline operation. The head office uses a central MongoDB database for consolidated reporting and administration. A sync service allows admins to push all unsynced sales from local SQLite to MongoDB with a single click.
+
+## Architecture
+- **Web Client**: ASP.NET Core MVC
+- **Store Data Layer**: Local SQLite per store
+- **Central Data Layer**: MongoDB
+- **Sync Service**: Handles pushing local sales to MongoDB
+
+## Key Features
+- Local, offline operation for each store
+- Centralized, consolidated reporting for the head office
+- One-click sync from the Reports page
+- Modern, responsive web interface
+
+## Usage
+- On store creation, a new SQLite file is created for that store
+- All store operations use the local SQLite file
+- Use the "Sync All Stores" button on the Reports page to push all unsynced sales to MongoDB
+
+## See Also
+- [UML Diagrams](UML/)
+- [ADR: Database Architecture](ADR/002-database-architecture.md)
+
 ## Table of Contents
 1. [Project Overview](#project-overview)
 2. [Technology Stack](#technology-stack)
@@ -116,4 +140,22 @@ Corner Shop is a console-based point-of-sale system designed for small retail bu
 See the [UML diagrams](UML/) for detailed system architecture views.
 
 ## Architecture Decisions
-See the [Architecture Decision Records](ADR/) for detailed documentation of key architectural decisions. 
+See the [Architecture Decision Records](ADR/) for detailed documentation of key architectural decisions.
+
+## New Features
+- Each store uses a local SQLite database for products and sales.
+- Admins can sync all stores' local data to the central MongoDB from the Reports page.
+- Offline operation is supported; sync when online.
+
+## System Design (Updated)
+- Local SQLite per store for fast, offline operations.
+- Central MongoDB for consolidated reporting and administration.
+- Sync service to push local sales to MongoDB.
+
+## Usage
+- On store creation, a new SQLite file is created.
+- Use the "Sync All Stores" button on the Reports page to push all unsynced sales to MongoDB.
+
+## See Also
+- [UML Diagrams](UML/) (updated for sync and local DB)
+- [ADR: Database Architecture](ADR/002-database-architecture.md) 
